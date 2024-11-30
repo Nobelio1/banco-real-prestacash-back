@@ -1,8 +1,6 @@
 package com.bancorealcash.app.BancoRealCash.controller;
 
-import com.bancorealcash.app.BancoRealCash.dto.EstadoFinancieroDTO;
-import com.bancorealcash.app.BancoRealCash.dto.ResponseDTO;
-import com.bancorealcash.app.BancoRealCash.dto.SolicitudDTO;
+import com.bancorealcash.app.BancoRealCash.dto.*;
 import com.bancorealcash.app.BancoRealCash.entities.HistorialCrediticio;
 import com.bancorealcash.app.BancoRealCash.entities.Solicitud;
 import com.bancorealcash.app.BancoRealCash.service.SolicitudService;
@@ -22,15 +20,27 @@ public class SolicitudController {
 
     @PostMapping("crear")
     public ResponseEntity<?> crearSolicitud(@RequestBody SolicitudDTO solicitudDTO) {
-        solicitudService.crearSolicitud(solicitudDTO);
-        return ResponseEntity.ok().build(); //cambiar el return
+        try {
+            solicitudService.crearSolicitud(solicitudDTO);
+            ResponseDTO<String> response = ResponseDTO.<String>builder()
+                    .code("000")
+                    .data("Solicitud creada correctamente")
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseDTO<String> errorResponse = ResponseDTO.<String>builder()
+                    .code("999")
+                    .data("Error al crear la solicitud: " + e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
 
     @GetMapping("listar")
     public ResponseEntity<ResponseDTO<?>> listarSolicitudes() {
         try {
-            List<Solicitud> solicitudes = solicitudService.listarSolicitudes();
-            ResponseDTO<List<Solicitud>> response = ResponseDTO.<List<Solicitud>>builder()
+            List<SolicitudResponseDTO> solicitudes = solicitudService.listarSolicitudes();
+            ResponseDTO<List<SolicitudResponseDTO>> response = ResponseDTO.<List<SolicitudResponseDTO>>builder()
                     .code("000")
                     .data(solicitudes)
                     .build();
@@ -39,6 +49,24 @@ public class SolicitudController {
             ResponseDTO<String> errorResponse = ResponseDTO.<String>builder()
                     .code("999")
                     .data("Error al obtener las solicitudes: " + e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<?> obtenerSolicitudPorId(@PathVariable Integer id) {
+        try {
+            SolicitudResponseDTO solicitud = solicitudService.obtenerSolicitudPorId(id);
+            ResponseDTO<SolicitudResponseDTO> response = ResponseDTO.<SolicitudResponseDTO>builder()
+                    .code("000")
+                    .data(solicitud)
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseDTO<String> errorResponse = ResponseDTO.<String>builder()
+                    .code("999")
+                    .data("Error al traer la solicitud: " + e.getMessage())
                     .build();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
         }
@@ -101,8 +129,8 @@ public class SolicitudController {
     @GetMapping("score/{usuarioId}")
     public ResponseEntity<ResponseDTO<?>> reviarScore(@PathVariable Integer usuarioId) {
         try {
-            HistorialCrediticio historial = solicitudService.obtenerOInsertarHistorial(usuarioId);
-            ResponseDTO<HistorialCrediticio> response = ResponseDTO.<HistorialCrediticio>builder()
+            HistorialCrediticioResponseDTO historial = solicitudService.obtenerOInsertarHistorial(usuarioId);
+            ResponseDTO<HistorialCrediticioResponseDTO> response = ResponseDTO.<HistorialCrediticioResponseDTO>builder()
                     .code("000")
                     .data(historial)
                     .build();

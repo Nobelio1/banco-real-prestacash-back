@@ -1,6 +1,7 @@
 package com.bancorealcash.app.BancoRealCash.controller;
 
 import com.bancorealcash.app.BancoRealCash.dto.PagoRequestDTO;
+import com.bancorealcash.app.BancoRealCash.dto.PagoResponseDTO;
 import com.bancorealcash.app.BancoRealCash.dto.ResponseDTO;
 import com.bancorealcash.app.BancoRealCash.entities.Pago;
 import com.bancorealcash.app.BancoRealCash.service.PagoService;
@@ -40,11 +41,11 @@ public class PagoController {
     }
 
     @GetMapping("/prestamo/{prestamoId}")
-    public ResponseEntity<ResponseDTO<List<Pago>>> obtenerPagosPorPrestamo(@PathVariable Integer prestamoId) {
+    public ResponseEntity<?> obtenerPagosPorPrestamo(@PathVariable Integer prestamoId) {
         try {
-            List<Pago> pagos = pagoService.obtenerPagosPorPrestamo(prestamoId);
+            List<PagoResponseDTO> pagos = pagoService.obtenerPagosPorPrestamo(prestamoId);
 
-            ResponseDTO<List<Pago>> response = ResponseDTO.<List<Pago>>builder()
+            ResponseDTO<List<PagoResponseDTO>> response = ResponseDTO.<List<PagoResponseDTO>>builder()
                     .code(pagos.isEmpty() ? "999" : "000")
                     .data(pagos.isEmpty() ? null : pagos)
                     .build();

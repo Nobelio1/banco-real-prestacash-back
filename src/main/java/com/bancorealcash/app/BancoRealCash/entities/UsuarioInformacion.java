@@ -15,7 +15,7 @@ import lombok.NoArgsConstructor;
 public class UsuarioInformacion {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "usuario_id")
     private Integer usuarioId;
 
     @Column(length = 50)
@@ -35,5 +35,10 @@ public class UsuarioInformacion {
 
     @Column(length = 100)
     private String direccion;
+
+    @OneToOne
+    @MapsId
+    @JoinColumn(name = "usuario_id")
+    private Usuario usuario;
 
 }

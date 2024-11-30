@@ -15,6 +15,7 @@ public class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "usuario_id")
     private Integer usuarioId;
 
     @ManyToOne
@@ -26,4 +27,7 @@ public class Usuario {
 
     @Column(nullable = false, length = 50)
     private String contrasena;
+
+    @OneToOne(mappedBy = "usuario", cascade = CascadeType.ALL)
+    private UsuarioInformacion usuarioInformacion;
 }

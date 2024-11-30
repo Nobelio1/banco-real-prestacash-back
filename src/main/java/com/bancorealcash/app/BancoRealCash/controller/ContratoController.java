@@ -1,6 +1,7 @@
 package com.bancorealcash.app.BancoRealCash.controller;
 
 import com.bancorealcash.app.BancoRealCash.dto.ContratoDTO;
+import com.bancorealcash.app.BancoRealCash.dto.ContratoResponseDTO;
 import com.bancorealcash.app.BancoRealCash.dto.ResponseDTO;
 import com.bancorealcash.app.BancoRealCash.entities.Contrato;
 import com.bancorealcash.app.BancoRealCash.service.ContratoService;
@@ -35,10 +36,10 @@ public class ContratoController {
     }
 
     @GetMapping("/{solicitudId}")
-    public ResponseEntity<ResponseDTO<Contrato>> obtenerContratoPorSolicitud(@PathVariable Integer solicitudId) {
+    public ResponseEntity<ResponseDTO<?>> obtenerContratoPorSolicitud(@PathVariable Integer solicitudId) {
         try {
-            Contrato contrato = contratoService.obtenerContratoPorSolicitud(solicitudId);
-            ResponseDTO<Contrato> response = ResponseDTO.<Contrato>builder()
+            ContratoResponseDTO contrato = contratoService.obtenerContratoPorSolicitud(solicitudId);
+            ResponseDTO<ContratoResponseDTO> response = ResponseDTO.<ContratoResponseDTO>builder()
                     .code("000")
                     .data(contrato)
                     .build();
@@ -53,12 +54,12 @@ public class ContratoController {
     }
 
     @PostMapping("/actualizar")
-    public ResponseEntity<ResponseDTO<Contrato>> actualizarEstadoYFecha(@RequestBody ContratoDTO contratoDTO) {
+    public ResponseEntity<ResponseDTO<?>> actualizarEstadoYFecha(@RequestBody ContratoDTO contratoDTO) {
         try {
-            Contrato contratoActualizado = contratoService.actualizarEstadoYFecha(contratoDTO);
-            ResponseDTO<Contrato> response = ResponseDTO.<Contrato>builder()
+            contratoService.actualizarEstadoYFecha(contratoDTO);
+            ResponseDTO<String> response = ResponseDTO.<String>builder()
                     .code("000")
-                    .data(contratoActualizado)
+                    .data("Se actualizo el contrato correctamente")
                     .build();
             return ResponseEntity.ok(response);
         } catch (Exception e) {

@@ -1,6 +1,8 @@
 package com.bancorealcash.app.BancoRealCash.service.Imp;
 
+import com.bancorealcash.app.BancoRealCash.dto.HistorialCrediticioResponseDTO;
 import com.bancorealcash.app.BancoRealCash.dto.SolicitudDTO;
+import com.bancorealcash.app.BancoRealCash.dto.SolicitudResponseDTO;
 import com.bancorealcash.app.BancoRealCash.entities.*;
 import com.bancorealcash.app.BancoRealCash.repository.*;
 import com.bancorealcash.app.BancoRealCash.service.SolicitudService;
@@ -12,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class SolicitudServiceImp implements SolicitudService {
@@ -63,9 +66,29 @@ public class SolicitudServiceImp implements SolicitudService {
     }
 
     @Override
-    public List<Solicitud> listarSolicitudes() {
-        return solicitudRepository.findAll();
+    public List<SolicitudResponseDTO> listarSolicitudes() {
+        return solicitudRepository.findAll().stream().map(solicitud -> SolicitudResponseDTO.builder()
+                        .solicitudId(solicitud.getSolicitudId())
+                        .usuarioId(solicitud.getUsuario().getUsuarioId())
+                        .estadoLaboralId(solicitud.getEstadoLaboral().getEstadoLaboralId())
+                        .estadoLaboral(solicitud.getEstadoLaboral().getNombre())
+                        .cuotaId(solicitud.getCuota().getCuotaId())
+                        .cuota(solicitud.getCuota().getNombre())
+                        .nombreEmpresa(solicitud.getNombreEmpresa())
+                        .cargo(solicitud.getCargo())
+                        .inMensual(solicitud.getIngresoMensual())
+                        .monto(solicitud.getMonto())
+                        .build())
+                .collect(Collectors.toList());
     }
+
+    @Override
+    public SolicitudResponseDTO obtenerSolicitudPorId(Integer id) {
+        Solicitud solicitud = solicitudRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Solicitud no encontrada"));
+        return convertirASolicitudResponseDTO(solicitud);
+    }
+
 
     @Override
     public void actualizarEstadoFinan(Integer solicitudId, String estadoFinan) {
@@ -95,14 +118,15 @@ public class SolicitudServiceImp implements SolicitudService {
     }
 
     @Override
-    public HistorialCrediticio obtenerOInsertarHistorial(Integer usuarioId) {
+    public HistorialCrediticioResponseDTO obtenerOInsertarHistorial(Integer usuarioId) {
         Usuario usuario = usuarioRepository.findById(usuarioId)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
-        Optional<HistorialCrediticio> historialExistente = historialCrediticioRepository.findByUsuarioId(usuarioId);
+        Optional<HistorialCrediticio> historialExistente = historialCrediticioRepository.findByUsuarioUsuarioId(usuarioId);
 
         if (historialExistente.isPresent()) {
-            return historialExistente.get();
+            HistorialCrediticio historial = historialExistente.get();
+            return mapToDTO(historial);
         }
 
         HistorialCrediticio nuevoHistorial = new HistorialCrediticio();
@@ -110,7 +134,33 @@ public class SolicitudServiceImp implements SolicitudService {
         nuevoHistorial.setRazon("No especifica");
         nuevoHistorial.setScore((int) (Math.random() * 1000) + 1);
 
-        return historialCrediticioRepository.save(nuevoHistorial);
+        HistorialCrediticio historialGuardado = historialCrediticioRepository.save(nuevoHistorial);
+
+        return mapToDTO(historialGuardado);
+    }
+
+    private HistorialCrediticioResponseDTO mapToDTO(HistorialCrediticio historial) {
+        return HistorialCrediticioResponseDTO.builder()
+                .hiscreId(historial.getHiscreId())
+                .usuarioId(historial.getUsuario().getUsuarioId().toString())
+                .score(historial.getScore())
+                .razon(historial.getRazon())
+                .build();
+    }
+
+    private SolicitudResponseDTO convertirASolicitudResponseDTO(Solicitud solicitud) {
+        return SolicitudResponseDTO.builder()
+                .solicitudId(solicitud.getSolicitudId())
+                .usuarioId(solicitud.getUsuario().getUsuarioId())
+                .estadoLaboralId(solicitud.getEstadoLaboral().getEstadoLaboralId())
+                .estadoLaboral(solicitud.getEstadoLaboral().getNombre())
+                .cuotaId(solicitud.getCuota().getCuotaId())
+                .cuota(solicitud.getCuota().getNombre())
+                .nombreEmpresa(solicitud.getNombreEmpresa())
+                .cargo(solicitud.getCargo())
+                .inMensual(solicitud.getIngresoMensual())
+                .monto(solicitud.getMonto())
+                .build();
     }
 
 

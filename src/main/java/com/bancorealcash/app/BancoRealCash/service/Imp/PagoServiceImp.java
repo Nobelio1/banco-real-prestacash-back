@@ -1,6 +1,7 @@
 package com.bancorealcash.app.BancoRealCash.service.Imp;
 
 import com.bancorealcash.app.BancoRealCash.dto.PagoRequestDTO;
+import com.bancorealcash.app.BancoRealCash.dto.PagoResponseDTO;
 import com.bancorealcash.app.BancoRealCash.entities.Pago;
 import com.bancorealcash.app.BancoRealCash.entities.Prestamo;
 import com.bancorealcash.app.BancoRealCash.repository.PagoRepository;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PagoServiceImp implements PagoService {
@@ -43,7 +45,14 @@ public class PagoServiceImp implements PagoService {
         }
     }
 
-    public List<Pago> obtenerPagosPorPrestamo(Integer prestamoId) {
-        return pagoRepository.findByPrestamo_PrestamoId(prestamoId);
+    public List<PagoResponseDTO> obtenerPagosPorPrestamo(Integer prestamoId) {
+        return pagoRepository.findByPrestamo_PrestamoId(prestamoId).stream().map( pago -> PagoResponseDTO.builder()
+                .pagoId(pago.getPagoId())
+                .prestamoId(pago.getPrestamo().getPrestamoId())
+                .monto(pago.getMonto())
+                .cuota(pago.getCuota())
+                .nroBoleta(pago.getNroBoleta())
+                .fechaPago(pago.getFechaPago())
+                .build()).collect(Collectors.toList());
     }
 }

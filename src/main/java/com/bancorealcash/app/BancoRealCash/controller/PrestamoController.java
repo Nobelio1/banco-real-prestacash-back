@@ -1,9 +1,6 @@
 package com.bancorealcash.app.BancoRealCash.controller;
 
-import com.bancorealcash.app.BancoRealCash.dto.EstadoRequestDTO;
-import com.bancorealcash.app.BancoRealCash.dto.MoraRequestDTO;
-import com.bancorealcash.app.BancoRealCash.dto.PrestamoDTO;
-import com.bancorealcash.app.BancoRealCash.dto.ResponseDTO;
+import com.bancorealcash.app.BancoRealCash.dto.*;
 import com.bancorealcash.app.BancoRealCash.service.PrestamoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +16,24 @@ public class PrestamoController {
 
     @Autowired
     private PrestamoService prestamoService;
+
+    @PostMapping("crear")
+    public ResponseEntity<?> crearPrestamo(@RequestBody PrestamoNDTO prestamoNDTO) {
+        try {
+            prestamoService.crearPrestamo(prestamoNDTO);
+            ResponseDTO<String> response = ResponseDTO.<String>builder()
+                    .code("000")
+                    .data("Solicitud creada correctamente")
+                    .build();
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+            ResponseDTO<String> errorResponse = ResponseDTO.<String>builder()
+                    .code("999")
+                    .data("Error al crear la solicitud: " + e.getMessage())
+                    .build();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+    }
 
     @GetMapping("listar")
     public ResponseEntity<ResponseDTO<List<PrestamoDTO>>> listarPrestamos() {

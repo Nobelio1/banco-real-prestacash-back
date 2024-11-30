@@ -5,5 +5,6 @@ import com.bancorealcash.app.BancoRealCash.dto.ResponseDTO;
 import com.bancorealcash.app.BancoRealCash.dto.UsuarioResponseDTO;
 
 public interface UsuarioService {
-    public ResponseDTO<UsuarioResponseDTO> informacionUsuario(Integer id);
+    ResponseDTO<UsuarioResponseDTO> informacionUsuario(Integer id);
+    void guardarUsuarioInformacion(UsuarioResponseDTO usuarioResponseDTO);
 }

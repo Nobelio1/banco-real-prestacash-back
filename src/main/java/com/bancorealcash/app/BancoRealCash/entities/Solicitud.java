@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "usuario_informacion")
+@Table(name = "solicitud")
 public class Solicitud {
 
     @Id
@@ -45,16 +45,16 @@ public class Solicitud {
     private Integer monto;
 
     @Column(length = 20)
-    private String estadoFinan;
+    private String estadoFinan = "PENDIENTE";
 
     @Column(length = 20)
-    private String estadoCredito;
+    private String estadoCredito = "PENDIENTE";
 
     @Column(length = 20)
-    private String estadoUsuario;
+    private String estadoUsuario = "PENDIENTE";
 
     @Column(length = 20)
-    private String estadoFinal;
+    private String estadoFinal = "PENDIENTE";
 
     @Column(name = "fecha_creacion", nullable = false, columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime fechaCreacion;

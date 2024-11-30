@@ -7,6 +7,7 @@ import com.bancorealcash.app.BancoRealCash.entities.UsuarioInformacion;
 import com.bancorealcash.app.BancoRealCash.repository.UsuarioInformacionRepository;
 import com.bancorealcash.app.BancoRealCash.repository.UsuarioRepository;
 import com.bancorealcash.app.BancoRealCash.service.UsuarioService;
+import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -50,5 +51,21 @@ public class UsuarioServiceImp implements UsuarioService {
                     .data(null)
                     .build();
         }
+    }
+
+    @Transactional
+    public void guardarUsuarioInformacion(UsuarioResponseDTO usuarioResponseDTO) {
+        Usuario usuario = usuarioRepository.findById(usuarioResponseDTO.getUsuarioId())
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        UsuarioInformacion usuarioInformacion = new UsuarioInformacion();
+        usuarioInformacion.setUsuario(usuario);
+        usuarioInformacion.setNombres(usuarioResponseDTO.getNombres());
+        usuarioInformacion.setApellidos(usuarioResponseDTO.getApellidos());
+        usuarioInformacion.setCelular(usuarioResponseDTO.getCelular());
+        usuarioInformacion.setDni(usuarioResponseDTO.getDni());
+        usuarioInformacion.setDireccion(usuarioResponseDTO.getDireccion());
+
+        usuarioInformacionRepository.save(usuarioInformacion);
     }
 }
