@@ -78,6 +78,9 @@ public class SolicitudServiceImp implements SolicitudService {
                         .cargo(solicitud.getCargo())
                         .inMensual(solicitud.getIngresoMensual())
                         .monto(solicitud.getMonto())
+                        .estadoFin(solicitud.getEstadoFinan())
+                        .estadoCredito(solicitud.getEstadoCredito())
+                        .estadoFinal(solicitud.getEstadoFinal())
                         .build())
                 .collect(Collectors.toList());
     }
@@ -160,6 +163,9 @@ public class SolicitudServiceImp implements SolicitudService {
                 .cargo(solicitud.getCargo())
                 .inMensual(solicitud.getIngresoMensual())
                 .monto(solicitud.getMonto())
+                .estadoFin(solicitud.getEstadoFinan())
+                .estadoCredito(solicitud.getEstadoCredito())
+                .estadoFinal(solicitud.getEstadoFinal())
                 .build();
     }
 

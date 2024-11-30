@@ -17,4 +17,8 @@ public class SolicitudResponseDTO {
     private String cargo;
     private Integer inMensual;
     private Integer monto;
+
+    private String estadoFin;
+    private String estadoCredito;
+    private String estadoFinal;
 }
