@@ -54,6 +54,7 @@ public class PrestamoServiceImp implements PrestamoService {
                 .map(prestamo -> PrestamoDTO.builder()
                         .prestamoId(prestamo.getPrestamoId())
                         .solicitudId(prestamo.getSolicitud().getSolicitudId())
+                        .usuarioId(prestamo.getSolicitud().getUsuario().getUsuarioId())
                         .cuotasPendientes(prestamo.getCuotasPendientes())
                         .mora(prestamo.getMora())
                         .estado(prestamo.getEstado())
